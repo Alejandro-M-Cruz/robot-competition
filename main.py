@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 
+from time import sleep
+
 from ev3dev2.led import Leds
 from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, MoveDifferential
 from ev3dev2.sensor.lego import TouchSensor, ColorSensor, UltrasonicSensor, GyroSensor
 from ev3dev2.wheel import EV3EducationSetTire
+from ev3dev2.sound import Sound
 
 WHEEL_DISTANCE_MM = 118
 MOTOR_SPEED_PERCENT = 25
 MOTOR_SPEED_PERCENT_WHEN_TURNING = 15
+INITIAL_CM_FROM_CAN = 60
+BRAKE_DEFAULT = True
 
 leds = Leds()
+speaker = Sound()
 crane_motor = MediumMotor(OUTPUT_A)
 move_differential = MoveDifferential(
     left_motor_port=OUTPUT_B,
@@ -21,17 +27,55 @@ move_differential = MoveDifferential(
 touch_sensor = TouchSensor()
 color_sensor = ColorSensor()
 ultrasonic_sensor = UltrasonicSensor()
-gyro_sensor = GyroSensor()
+move_differential.gyro = GyroSensor()
 
 
-def move_forward(distance_cm: float, speed=MOTOR_SPEED_PERCENT, brake=True):
-    move_differential.on_for_distance(distance_mm=distance_cm * 10, speed=speed, brake=brake)
+def move_forward(distance_cm: float, speed=MOTOR_SPEED_PERCENT, brake=BRAKE_DEFAULT, block=True):
+    move_differential.on_for_distance(distance_mm=distance_cm * 10, speed=speed, brake=brake, block=block)
+
+
+def turn_left(degrees: int, speed=MOTOR_SPEED_PERCENT_WHEN_TURNING, brake=BRAKE_DEFAULT, block=True):
+    move_differential.turn_left(degrees=degrees, speed=speed, brake=brake, use_gyro=True, block=block)
+
+
+def turn_right(degrees: int, speed=MOTOR_SPEED_PERCENT_WHEN_TURNING, brake=BRAKE_DEFAULT, block=True):
+    turn_left(degrees=-degrees, speed=speed, brake=brake, block=block)
+
+
+def stop(brake=BRAKE_DEFAULT):
+    move_differential.off(brake=brake)
+
+
+def floor_is_white():
+    return color_sensor.color == ColorSensor.COLOR_WHITE
+
+
+def set_leds_color(color: str):
+    """Supported colors are BLACK, RED, GREEN, AMBER, ORANGE and YELLOW"""
+    leds.set_color("LEFT", color)
+    leds.set_color("RIGHT", color)
 
 
 if __name__ == "__main__":
-    move_forward(distance_cm=10, brake=False)
-    crane_motor.on_for_degrees(speed=20, degrees=30)
-    while True:
-        if touch_sensor.is_pressed:
-            move_forward(distance_cm=5, brake=False)
-            break
+    set_leds_color("RED")
+    while not ultrasonic_sensor.distance_centimeters <= INITIAL_CM_FROM_CAN:
+        turn_left(degrees=10, brake=False)
+        move_forward(distance_cm=10, brake=False)
+        turn_right(degrees=10, brake=False)
+    while 10 < ultrasonic_sensor.distance_centimeters <= INITIAL_CM_FROM_CAN:
+        move_forward(distance_cm=5, brake=False)
+
+    while not touch_sensor.is_pressed:
+        crane_motor.on_for_degrees(speed=20, degrees=10, brake=False)
+    set_leds_color("YELLOW")
+    speaker.play_file("coin_sound.wav", play_type=Sound.PLAY_NO_WAIT_FOR_COMPLETE)
+    crane_motor.on_for_degrees(degrees=-100, speed=50, brake=False, block=False)
+    sleep(0.5)
+
+    move_forward(distance_cm=-100, speed=60, brake=False, block=False)
+
+    while not floor_is_white():
+        pass
+
+    set_leds_color("GREEN")
+    speaker.play_file("victory_sound.mp3")
