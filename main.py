@@ -11,7 +11,8 @@ from ev3dev2.sound import Sound
 WHEEL_DISTANCE_MM = 118
 MOTOR_SPEED_PERCENT = 25
 MOTOR_SPEED_PERCENT_WHEN_TURNING = 15
-INITIAL_CM_FROM_CAN = 60
+INITIAL_CM_FROM_CAN = 100
+DESIRED_CM_FROM_CAN = 11.2
 BRAKE_DEFAULT = True
 
 leds = Leds()
@@ -27,7 +28,7 @@ move_differential = MoveDifferential(
 touch_sensor = TouchSensor()
 color_sensor = ColorSensor()
 ultrasonic_sensor = UltrasonicSensor()
-move_differential.gyro = GyroSensor()
+# move_differential.gyro = GyroSensor()
 
 
 def move_forward(distance_cm: float, speed=MOTOR_SPEED_PERCENT, brake=BRAKE_DEFAULT, block=True):
@@ -56,26 +57,65 @@ def set_leds_color(color: str):
     leds.set_color("RIGHT", color)
 
 
+def turn_until_finding_can(left: bool):
+    while ultrasonic_sensor.distance_centimeters > INITIAL_CM_FROM_CAN:
+        if left:
+            turn_left(degrees=60, brake=False, block=False)
+        else:
+            turn_right(degrees=120, brake=False, block=False)
+
+
+
 if __name__ == "__main__":
+    with open("initial_distance_from_can.txt", "w") as f:
+        f.write(str(ultrasonic_sensor.distance_centimeters))
+    speaker.beep()
+
+
+    crane_motor.on_for_degrees(degrees=30, speed=5, brake=False, block=False)
+
     set_leds_color("RED")
-    while not ultrasonic_sensor.distance_centimeters <= INITIAL_CM_FROM_CAN:
-        turn_left(degrees=10, brake=False)
-        move_forward(distance_cm=10, brake=False)
-        turn_right(degrees=10, brake=False)
-    while 10 < ultrasonic_sensor.distance_centimeters <= INITIAL_CM_FROM_CAN:
-        move_forward(distance_cm=5, brake=False)
+
+    if ultrasonic_sensor.distance_centimeters > INITIAL_CM_FROM_CAN:
+        turn_right(degrees=60, speed=15, brake=True, block=False)
+
+    while ultrasonic_sensor.distance_centimeters > INITIAL_CM_FROM_CAN:
+        pass
+
+    if ultrasonic_sensor.distance_centimeters > INITIAL_CM_FROM_CAN:
+        turn_left(degrees=120, speed=15, brake=True, block=False)
+    else:
+        stop(brake=False)
+
+    while ultrasonic_sensor.distance_centimeters > INITIAL_CM_FROM_CAN:
+        pass
+
+    stop(brake=False)
+
+    move_forward(distance_cm=INITIAL_CM_FROM_CAN + 50, speed=30, brake=False, block=False)
+
+    while ultrasonic_sensor.distance_centimeters > DESIRED_CM_FROM_CAN:
+        pass
+
+    stop(brake=True)
+    crane_motor.on_for_degrees(degrees=-60, speed=20, brake=False, block=False)
 
     while not touch_sensor.is_pressed:
-        crane_motor.on_for_degrees(speed=20, degrees=10, brake=False)
-    set_leds_color("YELLOW")
-    speaker.play_file("coin_sound.wav", play_type=Sound.PLAY_NO_WAIT_FOR_COMPLETE)
-    crane_motor.on_for_degrees(degrees=-100, speed=50, brake=False, block=False)
-    sleep(0.5)
+        pass
 
-    move_forward(distance_cm=-100, speed=60, brake=False, block=False)
+    crane_motor.off(brake=False)
+    set_leds_color("YELLOW")
+    # speaker.play_file("coin_sound.wav", play_type=Sound.PLAY_NO_WAIT_FOR_COMPLETE, volume=100)
+    speaker.beep()
+    crane_motor.on_for_degrees(degrees=60, speed=30, brake=False, block=False)
+    move_forward(distance_cm=-150, speed=100, brake=False, block=False)
+
+    sleep(1)
 
     while not floor_is_white():
         pass
 
+    stop(brake=True)
     set_leds_color("GREEN")
-    speaker.play_file("victory_sound.mp3")
+    # speaker.play_file("coin_sound.wav", volume=100)
+    speaker.beep()
