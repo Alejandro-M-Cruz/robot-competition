@@ -151,7 +151,7 @@ detectado gracias a la cinta blanca y al sensor de color, cambia las luces LED a
 <br>
 
 ## Proceso de realización
-La primera versión funcional del script, desarrollada druante la primera clase dedicada al trabajo final, fue la siguiente:
+La primera versión funcional del script, desarrollada durante la primera clase dedicada al trabajo final, fue la siguiente:
 ```python
 #!/usr/bin/env python3
 
