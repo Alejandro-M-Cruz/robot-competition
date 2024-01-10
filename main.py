@@ -9,11 +9,8 @@ from ev3dev2.wheel import EV3EducationSetTire
 from ev3dev2.sound import Sound
 
 WHEEL_DISTANCE_MM = 118
-MOTOR_SPEED_PERCENT = 25
-MOTOR_SPEED_PERCENT_WHEN_TURNING = 15
 MAX_OBJECT_DISTANCE_CM = 100
 DESIRED_CM_FROM_CAN = 11.2
-BRAKE_DEFAULT = True
 
 leds = Leds()
 speaker = Sound()
