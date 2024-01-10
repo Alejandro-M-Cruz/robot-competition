@@ -50,6 +50,7 @@ def turn_until_can_is_in_front(turn_speed: float, first_turn_right: bool = True)
         move_differential.turn_right(degrees=45, speed=turn_speed, brake=True, block=False)
     else:
         move_differential.turn_left(degrees=45, speed=turn_speed, brake=True, block=False)
+
     while not can_is_in_front() and move_differential.is_running:
         pass
 
@@ -65,20 +66,24 @@ def turn_until_can_is_in_front(turn_speed: float, first_turn_right: bool = True)
         return "right" if first_turn_right else "left"
 
 
-def touch_can():
-    crane_motor.on_for_degrees(degrees=-60, speed=20, brake=False, block=False)
-    start = time.perf_counter()
-    while not touch_sensor.is_pressed and time.perf_counter() - start < 3:
-        pass
-    on_can_touched()
+def touch_can(max_attempts=5):
+    for _ in range(max_attempts):
+        crane_motor.on_for_degrees(degrees=-60, speed=20, brake=False, block=False)
+        start = time.perf_counter()
+        while time.perf_counter() - start < 3:
+            if touch_sensor.is_pressed:
+                on_can_touched()
+                return
+        time.sleep(10)
+        crane_motor.on_to_position(position=0, speed=30, brake=False, block=True)
+        if not can_is_in_front():
+            turn_until_can_is_in_front(turn_speed=2)
 
 
 def on_can_touched():
     set_leds_color("YELLOW")
     speaker.beep(play_type=Sound.PLAY_NO_WAIT_FOR_COMPLETE)
     crane_motor.on_to_position(position=0, speed=30, brake=False, block=False)
-
-
 
 
 if __name__ == "__main__":
