@@ -97,7 +97,7 @@ if __name__ == "__main__":
     while ultrasonic_sensor.distance_centimeters > DESIRED_CM_FROM_CAN:
         if not can_is_in_front():
             move_differential.off(brake=True)
-            can_side = turn_until_can_is_in_front(turn_speed=5,first_turn_right=can_side == "right")
+            can_side = turn_until_can_is_in_front(turn_speed=5, first_turn_right=can_side == "right")
             move_differential.off(brake=True)
         else:
             move_forward(distance_cm=MAX_OBJECT_DISTANCE_CM + 50, speed=30, brake=False, block=False)
