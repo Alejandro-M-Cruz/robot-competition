@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="afa0f0ec-3b41-4f47-83ac-7bbb646300f8" name="robot">
+        <fileTransfer accessType="SFTP" host="ev3dev.local" port="22" sshConfigId="d81fc447-9f4b-42f1-844c-d7ae400e9b36" sshConfig="robot@ev3dev.local:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

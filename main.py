@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from time import sleep
+import time
 
 from ev3dev2.led import Leds
 from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, MoveDifferential
@@ -45,56 +45,31 @@ def can_is_in_front():
     return ultrasonic_sensor.distance_centimeters <= MAX_OBJECT_DISTANCE_CM
 
 
-def turn_until_can_is_in_front():
-    if can_is_in_front():
-        return
+def turn_until_can_is_in_front(turn_speed: float, first_turn_right: bool = True):
+    if first_turn_right:
+        move_differential.turn_right(degrees=45, speed=turn_speed, brake=True, block=False)
     else:
-        move_differential.turn_right(degrees=45, speed=15, brake=True, block=False)
-
+        move_differential.turn_left(degrees=45, speed=turn_speed, brake=True, block=False)
     while not can_is_in_front() and move_differential.is_running:
         pass
 
     if not can_is_in_front():
-        move_differential.turn_left(degrees=90, speed=15, brake=True, block=False)
+        if first_turn_right:
+            move_differential.turn_left(degrees=90, speed=turn_speed, brake=True, block=False)
+        else:
+            move_differential.turn_right(degrees=90, speed=turn_speed, brake=True, block=False)
+        while not can_is_in_front() and move_differential.is_running:
+            pass
+        return "left" if first_turn_right else "right"
     else:
-        move_differential.off(brake=False)
-
-    while not can_is_in_front() and move_differential.is_running:
-        pass
-
-    move_differential.off(brake=False)
+        return "right" if first_turn_right else "left"
 
 
 def touch_can():
     crane_motor.on_for_degrees(degrees=-60, speed=20, brake=False, block=False)
-    times_attempted = 1
-
-    while not touch_sensor.is_pressed:
-        if not crane_motor.is_running:
-            for _ in range(10):
-                sleep(0.1)
-                if touch_sensor.is_pressed:
-                    on_can_touched()
-                    return
-            sleep(9)
-
-            crane_motor.on_to_position(position=0, speed=30, brake=False, block=True)
-
-            if not can_is_in_front():
-                turn_until_can_is_in_front()
-            else:
-                if ultrasonic_sensor.distance_centimeters < DESIRED_CM_FROM_CAN - 5:
-                    move_forward(distance_cm=-5, speed=15, brake=True, block=True)
-                elif ultrasonic_sensor.distance_centimeters > DESIRED_CM_FROM_CAN + 5:
-                    move_forward(distance_cm=5, speed=15, brake=True, block=True)
-                if times_attempted < 3:
-                    move_differential.turn_right(degrees=5, speed=15, brake=True, block=True)
-                else:
-                    move_differential.turn_left(degrees=5, speed=15, brake=True, block=True)
-
-            crane_motor.on_for_degrees(degrees=-60, speed=20, brake=False, block=False)
-            times_attempted += 1
-
+    start = time.perf_counter()
+    while not touch_sensor.is_pressed and time.perf_counter() - start < 3:
+        pass
     on_can_touched()
 
 
@@ -104,37 +79,35 @@ def on_can_touched():
     crane_motor.on_to_position(position=0, speed=30, brake=False, block=False)
 
 
-if __name__ == "__main__":
-    with open("initial_distance_from_can.txt", "w") as f:
-        f.write(str(ultrasonic_sensor.distance_centimeters))
 
+
+if __name__ == "__main__":
     crane_motor.on_to_position(position=0, speed=5, brake=False, block=True)
 
     set_leds_color("RED")
     speaker.set_volume(100)
     speaker.beep()
 
-    turn_until_can_is_in_front()
+    if can_is_in_front():
+        move_forward(distance_cm=MAX_OBJECT_DISTANCE_CM + 50, speed=30, brake=False, block=False)
 
-    move_forward(distance_cm=MAX_OBJECT_DISTANCE_CM + 50, speed=30, brake=False, block=False)
-
+    can_side = "unknown"
     while ultrasonic_sensor.distance_centimeters > DESIRED_CM_FROM_CAN:
         if not can_is_in_front():
-            turn_until_can_is_in_front()
-
+            move_differential.off(brake=True)
+            can_side = turn_until_can_is_in_front(turn_speed=5,first_turn_right=can_side == "right")
+            move_differential.off(brake=True)
+        else:
+            move_forward(distance_cm=MAX_OBJECT_DISTANCE_CM + 50, speed=30, brake=False, block=False)
     move_differential.off(brake=True)
-
     touch_can()
-
     move_forward(distance_cm=-150, speed=100, brake=False, block=False)
-
-    sleep(1)
+    time.sleep(1)
 
     while color_sensor.color != ColorSensor.COLOR_WHITE:
         pass
 
     move_differential.off(brake=True)
     set_leds_color("GREEN")
-    # speaker.play_file("coin_sound.wav", volume=100)
     speaker.beep()
     speaker.speak("Facilito")
