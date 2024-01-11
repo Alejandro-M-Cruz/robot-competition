@@ -1,6 +1,6 @@
 # robot-competition
 
-Para nuestro trabajo final de Sistemas Robóticos Autónomos, hemos elegido la competición. 
+Para nuestro trabajo final de Sistemas Robóticos Autónomos, los integrantes del grupo 10 hemos decidido participar en la competición. 
 
 <br>
 
@@ -12,6 +12,10 @@ Asimismo, se añadió un sensor ultrasónico en la parte frontal, que permite de
 para mejorar la precisión de las rotaciones y un sensor de color que apunta hacia el suelo, con el fin de determinar el momento en que el robot cruza la circunferencia exterior. 
 
 Aunque ya vienen incorporados y no requieren montaje, cabe mencionar también el uso de las luces LED y el altavoz. 
+
+Se puede observar a continuación el estado final del robot:
+
+![robot](https://github.com/Alejandro-M-Cruz/robot-competition/assets/113340373/bfce5975-4405-4b42-8227-b28ff56547ee)
 
 <br>
 
@@ -248,4 +252,5 @@ if __name__ == "__main__":
 Las pruebas realizadas con esta ya permitían al robot detectar la distancia a la lata, accionar el brazo adecuadamente y detectar su salida del círculo. Solo había un ligero inconveniente. El robot debía estar perfectamente alineado con la lata desde el principio, 
 o simplemente pasaba de largo. 
 
-Fue en este momento cuando se añadió la lógica de detección de la lata, mediante sucesivas rotaciones del robot. Además, se eliminaron algunas funciones y variables innecesarias, priorizando la simplicidad y legibilidad del código, así como un buen rendimiento.
+Fue en este momento cuando se añadió la lógica de detección de la lata, mediante sucesivas rotaciones del robot. Además, se eliminaron algunas funciones y variables innecesarias, priorizando la simplicidad y legibilidad del código, así como un buen rendimiento. Por supuesto, todo este proceso no fue inmediato y hubieron docenas de pruebas de por medio. 
+
