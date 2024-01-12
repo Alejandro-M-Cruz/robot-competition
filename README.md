@@ -1,6 +1,8 @@
 # robot-competition
 
-Para nuestro trabajo final de Sistemas Robóticos Autónomos, los integrantes del grupo 10 hemos decidido participar en la competición. 
+Para nuestro trabajo final de Sistemas Robóticos Autónomos, los integrantes del grupo 10 hemos decidido participar en la competición. He aquí una imagen de los sujetos en cuestión:
+
+![foto de grupo](https://github.com/Alejandro-M-Cruz/robot-competition/assets/113340373/57a0b6ac-7aa3-47a3-a2ed-174c112c8ec4)
 
 <br>
 
