@@ -100,7 +100,7 @@ def touch_can(max_attempts=5):
         time.sleep(10)
         crane_motor.on_to_position(position=0, speed=30, brake=False, block=True)
         if not can_is_in_front():
-            turn_until_can_is_in_front(turn_speed=2)
+            turn_until_can_is_in_front(turn_speed=5)
 
 
 def on_can_touched():
