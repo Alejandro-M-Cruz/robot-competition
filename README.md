@@ -7,8 +7,8 @@ Para nuestro trabajo final de Sistemas Robóticos Autónomos, los integrantes de
 <br>
 
 ## Montaje del robot 
-El primer paso fue el ensamblado de todos los sensores y actuadores necesarios. Además de los dos servomotores acoplados a las ruedas, ya utilizados en las prácticas anteriores, se incorporó un 
-numero motor para el brazo mecánico, que a su vez tiene un sensor de contacto en su extremo. 
+El primer paso fue el ensamblado de todos los sensores y actuadores necesarios en el robot, al que hemos decidido bautizar como "El Bicho". Además de los dos servomotores acoplados a las ruedas, ya utilizados en las prácticas anteriores, se incorporó un 
+nuevo motor para el brazo mecánico, que a su vez tiene un sensor de contacto en su extremo. 
 
 Asimismo, se añadió un sensor ultrasónico en la parte frontal, que permite detectar objetos delante del robot, un giroscopio 
 para mejorar la precisión de las rotaciones y un sensor de color que apunta hacia el suelo, con el fin de determinar el momento en que el robot cruza la circunferencia exterior. 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     while ultrasonic_sensor.distance_centimeters > DESIRED_CM_FROM_CAN:
         if not can_is_in_front():
             move_differential.off(brake=True)
-            can_side = turn_until_can_is_in_front(turn_speed=5,first_turn_right=can_side == "right")
+            can_side = turn_until_can_is_in_front(turn_speed=5, first_turn_right=can_side == "right")
             move_differential.off(brake=True)
         else:
             move_forward(distance_cm=MAX_OBJECT_DISTANCE_CM + 50, speed=30, brake=False, block=False)
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     move_differential.off(brake=True)
     set_leds_color("GREEN")
     speaker.beep()
-    speaker.speak("Facilito")
+    speaker.play_file("celebration.wav")
 
 ```
 En primer lugar, el robot hace subir el brazo, en caso de que no se encuentre ya arriba. Seguidamente, cambia el color de sus luces LED a rojo y emite un pitido. Este es el momento en que el robot comienza a moverse. 
@@ -152,7 +152,7 @@ en el cual los LEDs cambian a amarillo y se reproduce un segundo pitido. En caso
 intentarlo, rotando previamente hasta encontrar el objeto si fuera necesario.
 
 Por último, una vez el sensor de contacto ha sido presionado, el robot exprime al máximo la potencia de sus servomotores para alejarse de la lata marcha atrás lo más rápido posible. Al salir del círculo exterior, 
-detectado gracias a la cinta blanca y al sensor de color, cambia las luces LED a verde, hace sonar un último pitido y articula una chulesca celebración.
+detectado gracias a la cinta blanca y al sensor de color, cambia las luces LED a verde, hace sonar un último pitido y articula una efusiva celebración.
 
 <br>
 
@@ -254,5 +254,5 @@ if __name__ == "__main__":
 Las pruebas realizadas con esta ya permitían al robot detectar la distancia a la lata, accionar el brazo adecuadamente y detectar su salida del círculo. Solo había un ligero inconveniente. El robot debía estar perfectamente alineado con la lata desde el principio, 
 o simplemente pasaba de largo. 
 
-Fue en este momento cuando se añadió la lógica de detección de la lata, mediante sucesivas rotaciones del robot. Además, se eliminaron algunas funciones y variables innecesarias, priorizando la simplicidad y legibilidad del código, así como un buen rendimiento. Por supuesto, todo este proceso no fue inmediato y hubieron docenas de pruebas de por medio. 
+Fue en este momento cuando se añadió la lógica de detección de la lata, mediante sucesivas rotaciones del robot. Además, se eliminaron algunas funciones y variables innecesarias, priorizando la simplicidad y legibilidad del código, así como un buen rendimiento. Por supuesto, todo este proceso no fue inmediato y se ejecutaron multitud de pruebas de por medio. 
 
