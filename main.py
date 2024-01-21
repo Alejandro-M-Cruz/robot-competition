@@ -112,4 +112,4 @@ if __name__ == "__main__":
     move_differential.off(brake=True)
     set_leds_color("GREEN")
     speaker.beep()
-    speaker.speak("Facilito")
+    speaker.play_file("celebration.wav")
