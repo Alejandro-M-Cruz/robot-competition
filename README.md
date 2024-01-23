@@ -144,14 +144,13 @@ if __name__ == "__main__":
 En primer lugar, el robot hace subir el brazo, en caso de que no se encuentre ya arriba. Seguidamente, cambia el color de sus luces LED a rojo y emite un pitido. Este es el momento en que el robot comienza a moverse. 
 En caso de detectar algún objeto a menos de 1 metro, la lata en este caso, se mueve en línea recta hacia el mismo. Si no, rota sobre sí mismo, primero hacia la izquierda y luego hacia la derecha, hasta encontrarlo.
 
-Una vez detecta el objeto, comienza a moverse hacia él. Si en algún momento, durante la trayectoria en línea recta, el robot deja de detectar el objeto, este para, rota hasta volver a tenerlo a la vista, y continúa acercándose. Este proceso 
-se repite tantas veces como sea necesario.
+Una vez detecta el objeto, comienza a moverse hacia él. Si en algún momento, durante la trayectoria en línea recta, el robot deja de detectar el objeto, este se detiene, rota hasta volver a tenerlo a la vista, y continúa acercándose. El movimiento rotatorio se efectúa en el sentido en el cual se estaba rotando la última vez que se encontró la lata. De esta manera, el robot vuelve a encontrarla más rápidamente que si, por ejemplo, girara siempre primero a la izquierda y luego a la derecha, sin importar a qué lado se encuentre la lata al comienzo del recorrido. Este proceso se repite tantas veces como sea necesario hasta hallarse a una distancia adecuada.
 
 En el momento en que el robot se encuentra a menos de 11,2 centímetros del objeto, baja el brazo con el sensor de contacto en la punta, hasta que dicho sensor se encuentre presionado, momento
-en el cual los LEDs cambian a amarillo y se reproduce un segundo pitido. En caso de no haber acertado al objeto, espera 10 segundos y vuelve a 
-intentarlo, rotando previamente hasta encontrar el objeto si fuera necesario.
+en el cual los LEDs cambian a amarillo, se reproduce un segundo pitido y el brazo vuelve a su posición inicial. En caso de no haber acertado al objetivo, espera 10 segundos y vuelve a 
+intentarlo, rotando previamente hasta encontrar de nuevo la lata si fuera necesario.
 
-Por último, una vez el sensor de contacto ha sido presionado, el robot exprime al máximo la potencia de sus servomotores para alejarse de la lata marcha atrás lo más rápido posible. Al salir del círculo exterior, 
+Por último, una vez que ha tocado la lata, el robot exprime al máximo la potencia de sus servomotores para alejarse del objeto marcha atrás lo más rápido posible. Al salir del círculo exterior, 
 detectado gracias a la cinta blanca y al sensor de color, cambia las luces LED a verde, hace sonar un último pitido y articula una efusiva celebración.
 
 <br>
