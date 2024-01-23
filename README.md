@@ -7,7 +7,7 @@ Para nuestro trabajo final de Sistemas Robóticos Autónomos, los integrantes de
 <br>
 
 ## Montaje del robot 
-El primer paso fue el ensamblado de todos los sensores y actuadores necesarios en el robot, al que hemos decidido bautizar como "El Bicho". Además de los dos servomotores acoplados a las ruedas, ya utilizados en las prácticas anteriores, se incorporó un 
+El primer paso fue el ensamblado de todos los sensores y actuadores necesarios para el robot, al que hemos decidido bautizar como "El Bicho". Además de los dos servomotores acoplados a las ruedas, ya utilizados en las prácticas anteriores, se incorporó un 
 nuevo motor para el brazo mecánico, que a su vez tiene un sensor de contacto en su extremo. 
 
 Asimismo, se añadió un sensor ultrasónico en la parte frontal, que permite detectar objetos delante del robot, un giroscopio 
